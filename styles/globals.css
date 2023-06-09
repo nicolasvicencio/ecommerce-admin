@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+input, textarea {
+  @apply border border-gray-400 rounded-md px-1 w-full;
+  @apply mb-2
+}
+
+input:focus, textarea:focus {
+  @apply border-neutral-800;
+}
+
+h1 {
+  @apply text-neutral-900 mb-2 text-xl;
+}
+
+label {
+  @apply text-neutral-900;
+}
+
+.btn-primary {
+  @apply bg-neutral-900 text-white px-4 rounded-md py-2;
+}
+
+.btn-default, .btn-red {
+  @apply px-4 py-1 rounded-sm;
+}
+
+.btn-red {
+  @apply bg-red-500 text-white;
+}
+.btn-default {
+  @apply bg-gray-200;
+}
+
+table {
+  @apply w-full;
+}
+
+table thead tr th {
+  @apply bg-neutral-300;
+}
+
+table tr td{
+  @apply border border-gray-300 p-1;
+}
+table a {
+  @apply bg-neutral-600 text-white text-sm p-1 px-2 rounded-sm inline-flex gap-2 items-center mx-1
+}
+table a:hover {
+  @apply bg-neutral-500
+}
