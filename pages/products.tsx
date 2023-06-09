@@ -14,7 +14,12 @@ export default function Products({}: Props) {
     productService.getProducts().then((res) => setProducts(res));
   }, []);
 
-  if (!products) return <div>loading..</div>;
+  if (!products)
+    return (
+      <Layout>
+        <div>loading..</div>;
+      </Layout>
+    );
 
   return (
     <Layout>

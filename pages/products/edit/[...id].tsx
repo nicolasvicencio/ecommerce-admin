@@ -16,8 +16,9 @@ export default function EditProuctPage() {
 
   return (
     <Layout>
+      <h1>Edit Product</h1>
       {/* @ts-ignore */}
-      <ProductForm {...productData} />
+      {productData && <ProductForm {...productData} />}
     </Layout>
   );
 }

@@ -22,7 +22,6 @@ export default async function handler(
     });
   });
   const links = [];
-  console.log({ files });
   for (const file of await files.file) {
     const fileExt = file.originalFilename.split(".").pop();
     const newFilename = Date.now() + "." + fileExt;

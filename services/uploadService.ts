@@ -15,6 +15,6 @@ export default {
   },
   createUpload: async (data: FormData) => {
     const upload = await axios.post("/api/upload", data);
-    console.log(upload);
+    return upload.data;
   },
 };
