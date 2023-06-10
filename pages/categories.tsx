@@ -2,6 +2,8 @@ import { Layout } from "@/components";
 import categoryService, { Data } from "@/services/categoryService";
 import { ObjectId } from "mongodb";
 import React, { FormEvent, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 type CategoryType = {
   _id: ObjectId;
@@ -19,14 +21,18 @@ export default function categories() {
   const [editedCategory, setEditedCategory] = useState<CategoryType | null>(
     null
   );
+  const MySwal = withReactContent(Swal);
 
   const addCategory = async (e: FormEvent) => {
     e.preventDefault();
     const data: Data = { categoryName, parentCategory };
-    console.log(categoryName);
 
     if (editedCategory) {
-      await categoryService.editCategories(editedCategory._id, data);
+      parentCategory === ""
+        ? await categoryService.editCategories(editedCategory._id, {
+            categoryName,
+          })
+        : await categoryService.editCategories(editedCategory._id, data);
       setEditedCategory(null);
     } else {
       parentCategory === ""
@@ -48,9 +54,25 @@ export default function categories() {
     setParentCategory(category.parent?._id);
   };
 
-  const deleteCategory = async (id: ObjectId) => {
-    await categoryService.deleteCategory(id);
-    fetchCategories();
+  const deleteCategory = async (category: CategoryType) => {
+    MySwal.fire({
+      title: (
+        <p>
+          Delete category <b>'{category.name}'</b> ?
+        </p>
+      ),
+      cancelButtonText: "Cancel",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#d55",
+      showLoaderOnConfirm: true,
+      reverseButtons: true,
+      preConfirm: async () => {
+        const res = await categoryService.deleteCategory(category._id);
+        fetchCategories();
+        if (res) MySwal.fire(<p>Category removed!</p>);
+      },
+    });
   };
 
   useEffect(() => {
@@ -115,7 +137,7 @@ export default function categories() {
                   </button>
                   <button
                     className="btn btn-primary"
-                    onClick={() => deleteCategory(category._id)}
+                    onClick={() => deleteCategory(category)}
                   >
                     Delete
                   </button>
