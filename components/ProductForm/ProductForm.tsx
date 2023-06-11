@@ -6,6 +6,7 @@ import uploadService from "@/services/uploadService";
 import { Spinner } from "../Spinner";
 import { ReactSortable } from "react-sortablejs";
 import categoryService from "@/services/categoryService";
+import { ObjectId } from "mongodb";
 
 export type ProductFormProps = {
   _id?: string;
@@ -14,6 +15,7 @@ export type ProductFormProps = {
   description?: string;
   price?: string;
   images?: [];
+  properties: {};
 };
 
 const ProductForm = ({
@@ -23,22 +25,33 @@ const ProductForm = ({
   description: currentDescription,
   price: currentPrice,
   images: currentImages,
+  properties: currentProperties,
 }: ProductFormProps) => {
   const [title, setTitle] = useState<string>(currentTitle || "");
-  const [category, setCategory] = useState<string>(currentCategory || "");
+  const [category, setCategory] = useState<any>(currentCategory || "");
   const [description, setDescription] = useState<string>(
     currentDescription || ""
   );
   const [price, setPrice] = useState<string>(currentPrice || "");
+  const [productProperties, setProductProperties] = useState<any>(
+    currentProperties || {}
+  );
   const [images, setImages] = useState<[]>(currentImages || []);
   const [goToProduct, setGoToProduct] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [categories, setCategories] = useState<CategoryType[] | undefined>();
+  const [categories, setCategories] = useState<CategoryType[]>([]);
   const router = useRouter();
 
   const saveProduct = async (e: FormEvent) => {
     e.preventDefault();
-    const data: ProductType = { title, description, price, images, category };
+    const data: ProductType = {
+      title,
+      description,
+      price,
+      images,
+      category,
+      properties: productProperties,
+    };
 
     if (_id) {
       productService.updateProduct(data, _id);
@@ -71,6 +84,28 @@ const ProductForm = ({
   };
 
   const updateImagesOrder = (images: never[]) => setImages(images as []);
+  const propertiesToFill = [];
+  if (categories?.length > 0 && category) {
+    let categoryInfo = categories.find((c) => c._id === category);
+    console.log(categoryInfo);
+    //@ts-ignore
+    propertiesToFill.push(...categoryInfo?.properties);
+    while (categoryInfo?.parent?._id) {
+      const parentCategory = categories.find(
+        ({ _id }) => _id === categoryInfo?.parent?._id
+      );
+      console.log(parentCategory);
+      propertiesToFill.push(...parentCategory?.properties);
+      categoryInfo = parentCategory;
+    }
+  }
+  function changeProductProperties(propertyName: any, value: string) {
+    setProductProperties((prev: any) => {
+      const newProductProps = { ...prev };
+      newProductProps[propertyName] = value;
+      return newProductProps;
+    });
+  }
 
   useEffect(() => {
     categoryService
@@ -97,12 +132,29 @@ const ProductForm = ({
             <option value={category._id}>{category.name}</option>
           ))}
       </select>
+
+      {propertiesToFill.length > 0 &&
+        propertiesToFill.map((p) => (
+          <div className="flex gap-1">
+            <div>{p.name}</div>
+            <select
+              className="w-fit"
+              value={productProperties[p.name]}
+              onChange={(e) => changeProductProperties(p.name, e.target.value)}
+            >
+              {p.values.map((value) => (
+                <option value={value}>{value}</option>
+              ))}
+            </select>
+          </div>
+        ))}
+
       <label>Images </label>
       <div className="mb-2 flex flex-wrap gap-2">
         <ReactSortable
           list={images}
           setList={updateImagesOrder}
-          className="flex flex-wrap gap-2"
+          className="flex flex-wrap gap-2 items-center justify-center"
         >
           {!!images?.length &&
             images.map((image: string) => (

@@ -6,6 +6,8 @@ import fs from "fs";
 import mime from "mime-types";
 //@ts-ignore
 import multiparty from "multiparty";
+import { isAdminRequest } from "./auth/[...nextauth]";
+import { mongooseConnect } from "@/lib/mongoose";
 
 const bucketName: string = "ecommerce-nextjs-dev";
 
@@ -13,7 +15,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await mongooseConnect();
   const form = new multiparty.Form();
+  await isAdminRequest(req, res);
 
   const { fields, files }: any = await new Promise((resolve, reject) => {
     form.parse(req, (err: any, fields: any, files: any) => {

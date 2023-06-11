@@ -1,6 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
 import { NextApiRequest, NextApiResponse } from "next";
+import { isAdminRequest } from "./auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,11 +9,14 @@ export default async function handler(
 ) {
   const { method } = req;
   await mongooseConnect();
+  await isAdminRequest(req, res);
+
   if (method === "POST") {
-    const { categoryName, parentCategory } = req.body;
+    const { categoryName, parentCategory, properties } = req.body;
     const category = await Category.create({
       name: categoryName,
       parent: parentCategory,
+      properties,
     });
     res.json(category);
   }
@@ -23,10 +27,12 @@ export default async function handler(
   }
 
   if (method === "PUT") {
-    const { categoryName, parentCategory, _id } = req.body;
+    const { categoryName, parentCategory, properties, _id } = req.body;
+
     const category = await Category.findByIdAndUpdate(_id, {
       name: categoryName,
       parent: parentCategory,
+      properties,
     });
     res.json(category);
   }

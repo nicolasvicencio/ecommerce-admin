@@ -29,19 +29,19 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  @apply border-emerald-800;
+  @apply border-gray-800;
 }
 
 h1 {
-  @apply text-emerald-900 mb-2 text-xl;
+  @apply text-gray-900 mb-2 text-xl;
 }
 
 label {
-  @apply text-emerald-900;
+  @apply text-gray-900;
 }
 
 .btn-primary {
-  @apply bg-emerald-900 text-white px-4 rounded-md py-2;
+  @apply bg-gray-900 text-white px-4 rounded-md py-2;
 }
 
 .btn-default,

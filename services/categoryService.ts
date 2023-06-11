@@ -1,9 +1,11 @@
+import { PropertyType } from "@/types/types";
 import axios from "axios";
 import { ObjectId } from "mongodb";
 
 export type Data = {
   categoryName: string;
   parentCategory?: string | ObjectId;
+  properties?: PropertyType[] | PropertyType;
 };
 
 export default {

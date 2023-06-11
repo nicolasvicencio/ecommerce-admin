@@ -1,22 +1,16 @@
 import { Layout } from "@/components";
 import categoryService, { Data } from "@/services/categoryService";
+import { CategoryHandlerParams, CategoryType } from "@/types/types";
 import { ObjectId } from "mongodb";
 import React, { FormEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { CategoryType, PropertyType } from "@/types/types";
-
-interface CategoryHandlerParams {
-  index: number;
-  property: PropertyType;
-  newValue: string;
-}
 
 export default function categories() {
   const [categoryName, setCategoryName] = useState<string>("");
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [parentCategory, setParentCategory] = useState<string | ObjectId>("");
-  const [properties, setProperties] = useState<Array<any>>([]);
+  const [properties, setProperties] = useState<Array<any>>();
   const [editedCategory, setEditedCategory] = useState<CategoryType | null>(
     null
   );
@@ -24,7 +18,18 @@ export default function categories() {
   const addCategory = async (e: FormEvent) => {
     e.preventDefault();
     if (categoryName === "") return;
-    const data: Data = { categoryName, parentCategory };
+    const configProperties = properties?.map((p) => {
+      return {
+        name: p.name,
+        values: p.values.split(","),
+      };
+    });
+
+    const data: Data = {
+      categoryName,
+      parentCategory,
+      properties: configProperties || [],
+    };
 
     if (editedCategory) {
       parentCategory === ""
@@ -40,6 +45,8 @@ export default function categories() {
     }
 
     setCategoryName("");
+    setParentCategory("");
+    setProperties([]);
     fetchCategories();
   };
   const fetchCategories = () => {
@@ -50,6 +57,7 @@ export default function categories() {
     setEditedCategory(category);
     setCategoryName(category.name);
     setParentCategory(category.parent?._id);
+    setProperties(category.properties);
   };
 
   const deleteCategory = async (category: CategoryType) => {
@@ -67,12 +75,18 @@ export default function categories() {
       showLoaderOnConfirm: true,
       reverseButtons: true,
       preConfirm: async () => {
-        const res = await categoryService.deleteCategory(category._id);
+        await categoryService.deleteCategory(category._id);
         fetchCategories();
-        if (res) MySwal.fire(<p>Category removed!</p>);
       },
     });
   };
+
+  function cancelEdited() {
+    setEditedCategory(null);
+    setCategoryName("");
+    setParentCategory("");
+    setProperties([]);
+  }
 
   function addProperty() {
     setProperties((prev) => {
@@ -151,7 +165,7 @@ export default function categories() {
           >
             Add property
           </button>
-          {properties?.length! > 0 &&
+          {properties?.length > 0 &&
             properties?.map((property, index) => (
               <div className="flex gap-1 mt-2 items-center ">
                 <input
@@ -194,14 +208,14 @@ export default function categories() {
           {editedCategory && (
             <button
               type="button"
-              className="btn-default py-2 "
-              onClick={() => setEditedCategory(null)}
+              className="btn btn-default py-2"
+              onClick={cancelEdited}
             >
               Cancel
             </button>
           )}
           <button type="submit" className="btn btn-primary p-1 mt-2 w-fit">
-            {editedCategory ? "Update" : "Add"}
+            {editedCategory ? "Update" : "Save"}
           </button>
         </div>
       </form>

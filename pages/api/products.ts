@@ -1,6 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
 import { NextApiRequest, NextApiResponse } from "next";
+import { isAdminRequest } from "./auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,15 +9,18 @@ export default async function handler(
 ) {
   const { method } = req;
   await mongooseConnect();
+  await isAdminRequest(req, res);
 
   if (method === "POST") {
-    const { title, description, price, images, category } = req.body;
+    const { title, description, price, images, category, properties } =
+      req.body;
     const newProduct = await Product.create({
       title,
       description,
       price,
       images,
       category,
+      properties,
     });
     res.status(200).json(newProduct);
   }
@@ -32,12 +36,13 @@ export default async function handler(
   }
 
   if (method === "PUT") {
-    const { title, description, price, category, _id } = req.body;
+    const { title, description, price, category, properties, _id } = req.body;
     await Product.findByIdAndUpdate(_id, {
       title,
       description,
       price,
       category,
+      properties,
     });
     res.json(true);
   }
