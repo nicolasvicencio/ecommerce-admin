@@ -27,7 +27,7 @@ export default function Layout({ children }: Props) {
 
   return (
     <div className="bg-gray-800 min-h-full">
-      <div className="block md:hidden flex item-center p-4">
+      <div className="block text-white md:hidden flex item-center p-4">
         <button onClick={() => setShowNav(true)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"

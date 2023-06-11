@@ -10,7 +10,7 @@ export default function categories() {
   const [categoryName, setCategoryName] = useState<string>("");
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [parentCategory, setParentCategory] = useState<string | ObjectId>("");
-  const [properties, setProperties] = useState<Array<any>>();
+  const [properties, setProperties] = useState<Array<any>>([]);
   const [editedCategory, setEditedCategory] = useState<CategoryType | null>(
     null
   );
@@ -196,7 +196,7 @@ export default function categories() {
                 />
                 <button
                   type="button"
-                  className="btn btn-default "
+                  className="btn  btn-red "
                   onClick={() => removeProperty(index)}
                 >
                   Remove
@@ -234,15 +234,15 @@ export default function categories() {
                 <tr>
                   <td>{category.name}</td>
                   <td>{category.parent?.name}</td>
-                  <td className="gap-2 flex">
+                  <td className="gap-4 flex">
                     <button
-                      className="btn btn-primary"
+                      className="text-gray-500 bg-white hover:text-gray-400 hover:bg-white"
                       onClick={() => editCategory(category)}
                     >
                       Edit
                     </button>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-primary btn-red"
                       onClick={() => deleteCategory(category)}
                     >
                       Delete

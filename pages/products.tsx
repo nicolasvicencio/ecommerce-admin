@@ -14,13 +14,6 @@ export default function Products({}: Props) {
     productService.getProducts().then((res) => setProducts(res));
   }, []);
 
-  if (!products)
-    return (
-      <Layout>
-        <div>loading..</div>;
-      </Layout>
-    );
-
   return (
     <Layout>
       <Link href={"/products/new"} className="btn-primary">
@@ -40,7 +33,7 @@ export default function Products({}: Props) {
               <td>
                 <Link
                   href={`/products/edit/${product._id}`}
-                  className="btn btn-primary"
+                  className="text-gray-500 bg-white hover:text-gray-400 hover:bg-white"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +53,7 @@ export default function Products({}: Props) {
                 </Link>
                 <Link
                   href={`/products/delete/${product._id}`}
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-red"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

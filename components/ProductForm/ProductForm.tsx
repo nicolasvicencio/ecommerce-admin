@@ -6,7 +6,6 @@ import uploadService from "@/services/uploadService";
 import { Spinner } from "../Spinner";
 import { ReactSortable } from "react-sortablejs";
 import categoryService from "@/services/categoryService";
-import { ObjectId } from "mongodb";
 
 export type ProductFormProps = {
   _id?: string;
@@ -135,17 +134,23 @@ const ProductForm = ({
 
       {propertiesToFill.length > 0 &&
         propertiesToFill.map((p) => (
-          <div className="flex gap-1">
-            <div>{p.name}</div>
-            <select
-              className="w-fit"
-              value={productProperties[p.name]}
-              onChange={(e) => changeProductProperties(p.name, e.target.value)}
-            >
-              {p.values.map((value) => (
-                <option value={value}>{value}</option>
-              ))}
-            </select>
+          <div className="">
+            <label>{p.name[0].toUpperCase() + p.name.substring(1)}</label>
+            <div>
+              <select
+                className="w-fit"
+                value={productProperties[p.name]}
+                onChange={(e) =>
+                  changeProductProperties(p.name, e.target.value)
+                }
+              >
+                {p.values.map((value) => (
+                  <option value={value}>
+                    {value[0].toUpperCase() + value.substring(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         ))}
 
@@ -158,7 +163,10 @@ const ProductForm = ({
         >
           {!!images?.length &&
             images.map((image: string) => (
-              <div key={image} className="h-24 w-24">
+              <div
+                key={image}
+                className="h-24 w-24 shadow-md rounded-sm border border-gray-300"
+              >
                 <img src={image} alt="image" className="rounded-md "></img>
               </div>
             ))}
@@ -170,7 +178,7 @@ const ProductForm = ({
           </div>
         )}
 
-        <label className="w-24 h-16 flex gap-1 justify-center items-center text-sm text-neutral-500 bg-gray-200 rounder-sm hover:bg-gray-100 cursor-pointer">
+        <label className="w-24 h-24 flex flex-col gap-1 justify-center items-center text-sm text-neutral-800 bg-white shadow-md border-gray-400 rounded-sm hover:bg-gray-300 cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
