@@ -1,17 +1,19 @@
 import { Layout, ProductForm } from "@/components";
 import productService from "@/services/productService";
-import { Product } from "@/types/types";
+import { ProductType } from "@/types/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 export default function EditProuctPage() {
-  const [productData, setProductData] = useState<Product>();
+  const [productData, setProductData] = useState<ProductType>();
   const router = useRouter();
-  const {id} = router.query
+  const { id } = router.query;
 
   useEffect(() => {
     if (!id) return;
-    productService.getProductById(id[0]).then((res: Product) => setProductData(res));
+    productService
+      .getProductById(id[0])
+      .then((res: ProductType) => setProductData(res));
   }, [id]);
 
   return (

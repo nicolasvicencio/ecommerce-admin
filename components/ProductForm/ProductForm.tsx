@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useState } from "react";
 import productService from "@/services/productService";
-import { Product } from "@/types/types";
+import { CategoryType, ProductType } from "@/types/types";
 import uploadService from "@/services/uploadService";
 import { Spinner } from "../Spinner";
 import { ReactSortable } from "react-sortablejs";
+import categoryService from "@/services/categoryService";
 
 export type ProductFormProps = {
   _id?: string;
   title?: string;
+  category: string;
   description?: string;
   price?: string;
   images?: [];
@@ -17,11 +19,13 @@ export type ProductFormProps = {
 const ProductForm = ({
   _id,
   title: currentTitle,
+  category: currentCategory,
   description: currentDescription,
   price: currentPrice,
   images: currentImages,
 }: ProductFormProps) => {
   const [title, setTitle] = useState<string>(currentTitle || "");
+  const [category, setCategory] = useState<string>(currentCategory || "");
   const [description, setDescription] = useState<string>(
     currentDescription || ""
   );
@@ -29,13 +33,12 @@ const ProductForm = ({
   const [images, setImages] = useState<[]>(currentImages || []);
   const [goToProduct, setGoToProduct] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [categories, setCategories] = useState<CategoryType[] | undefined>();
   const router = useRouter();
-
-  console.log({ currentImages });
 
   const saveProduct = async (e: FormEvent) => {
     e.preventDefault();
-    const data: Product = { title, description, price, images };
+    const data: ProductType = { title, description, price, images, category };
 
     if (_id) {
       productService.updateProduct(data, _id);
@@ -67,8 +70,13 @@ const ProductForm = ({
     }
   };
 
-  const updateImagesOrder = (images: never[]) => setImages(images as []) 
-  
+  const updateImagesOrder = (images: never[]) => setImages(images as []);
+
+  useEffect(() => {
+    categoryService
+      .getCategories()
+      .then((res: CategoryType[]) => setCategories(res));
+  }, []);
 
   return (
     <form onSubmit={saveProduct}>
@@ -80,6 +88,15 @@ const ProductForm = ({
         onChange={(e) => setTitle(e.target.value)}
       />
 
+      <label>Category</label>
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <option value="">Uncategorized</option>
+        {categories?.length! > 0 &&
+          categories?.map((category) => (
+            //@ts-ignore
+            <option value={category._id}>{category.name}</option>
+          ))}
+      </select>
       <label>Images </label>
       <div className="mb-2 flex flex-wrap gap-2">
         <ReactSortable

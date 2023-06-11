@@ -10,12 +10,13 @@ export default async function handler(
   await mongooseConnect();
 
   if (method === "POST") {
-    const { title, description, price, images } = req.body;
+    const { title, description, price, images, category } = req.body;
     const newProduct = await Product.create({
       title,
       description,
       price,
       images,
+      category,
     });
     res.status(200).json(newProduct);
   }
@@ -31,8 +32,13 @@ export default async function handler(
   }
 
   if (method === "PUT") {
-    const { title, description, price, _id } = req.body;
-    await Product.findByIdAndUpdate(_id, { title, description, price });
+    const { title, description, price, category, _id } = req.body;
+    await Product.findByIdAndUpdate(_id, {
+      title,
+      description,
+      price,
+      category,
+    });
     res.json(true);
   }
 

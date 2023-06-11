@@ -22,26 +22,26 @@ img {
 input,
 select,
 textarea {
-  @apply border border-gray-400 rounded-md px-1 w-full;
+  @apply border border-neutral-400 rounded-md px-1 w-full;
   @apply mb-2;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  @apply border-neutral-800;
+  @apply border-emerald-800;
 }
 
 h1 {
-  @apply text-neutral-900 mb-2 text-xl;
+  @apply text-emerald-900 mb-2 text-xl;
 }
 
 label {
-  @apply text-neutral-900;
+  @apply text-emerald-900;
 }
 
 .btn-primary {
-  @apply bg-neutral-900 text-white px-4 rounded-md py-2;
+  @apply bg-emerald-900 text-white px-4 rounded-md py-2;
 }
 
 .btn-default,
@@ -53,7 +53,7 @@ label {
   @apply bg-red-500 text-white;
 }
 .btn-default {
-  @apply bg-gray-200;
+  @apply bg-gray-300 rounded-md;
 }
 
 table {

@@ -1,6 +1,6 @@
 import { Layout } from "@/components";
 import productService from "@/services/productService";
-import { Product } from "@/types/types";
+import { ProductType } from "@/types/types";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -8,7 +8,7 @@ type Props = {};
 
 //Products
 export default function Products({}: Props) {
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [products, setProducts] = useState<ProductType[] | null>(null);
 
   useEffect(() => {
     productService.getProducts().then((res) => setProducts(res));
@@ -38,7 +38,10 @@ export default function Products({}: Props) {
             <tr key={i}>
               <td>{product.title}</td>
               <td>
-                <Link href={`/products/edit/${product._id}`}>
+                <Link
+                  href={`/products/edit/${product._id}`}
+                  className="btn btn-primary"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -55,7 +58,10 @@ export default function Products({}: Props) {
                   </svg>{" "}
                   Edit
                 </Link>
-                <Link href={`/products/delete/${product._id}`}>
+                <Link
+                  href={`/products/delete/${product._id}`}
+                  className="btn btn-primary"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
